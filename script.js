@@ -1,6 +1,7 @@
 let firstNum = '';
 let secondNum = '';
 let operator = null;
+let is_infinity = false;
 const display = document.querySelector('.display');
 
 
@@ -17,6 +18,10 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
+    if (a === 0 || b === 0) {
+        is_infinity = true;
+        return "Infinity ;)";
+    }
     return a / b;
 }
 
@@ -31,10 +36,15 @@ function operate(a, b, op, new_operator=null) {
     } else if (operator === "/") {
         result = divide(a, b);
     }
-    if (!Number.isInteger(result)) {
-        result = parseFloat(result.toFixed(4))
+
+    if (is_infinity) {
+        display.innerText = result;
+        return;
     }
-    console.log(typeof(result))
+
+    if (!Number.isInteger(result)) {
+        result = parseFloat(result.toFixed(4));
+    }
     firstNum = result;
     secondNum = '';
     operator = new_operator;
@@ -48,6 +58,8 @@ digits.forEach((button) => button.addEventListener('click',
     (e) => processDigits(e.target.innerText)));
 
 function processDigits(n) {
+    if (is_infinity) return;
+
     if (operator === null) {
         firstNum += n;
         display.innerText = firstNum;
@@ -63,6 +75,8 @@ operators.forEach((button) => button.addEventListener('click',
     (e) => processOperators(e.target.innerText)));
 
 function processOperators(op) {
+    if (is_infinity) return;
+
     if ((operator != null) && firstNum && secondNum) {
         if (op === '=') {
             operate(+firstNum, +secondNum, operator);
@@ -75,13 +89,13 @@ function processOperators(op) {
 }
 
 
-const ceBtn = document.querySelector('.ce');
-ceBtn.addEventListener('click', ce)
+const ceBtn = document.querySelector('.ac');
+ceBtn.addEventListener('click', ac);
 
-function ce() {
+function ac() {
     firstNum = '';
     secondNum = '';
     operator = null;
     display.textContent = '';
+    is_infinity = false;
 }
-
