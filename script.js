@@ -17,11 +17,11 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-    return a/b;
+    return a / b;
 }
 
 
-function operate(a, b, operator) {
+function operate(a, b, op, new_operator=null) {
     if (operator === "+") {
         result = add(a, b);
     } else if (operator === "-") {
@@ -31,9 +31,16 @@ function operate(a, b, operator) {
     } else if (operator === "/") {
         result = divide(a, b);
     }
-    
+    if (!Number.isInteger(result)) {
+        result = parseFloat(result.toFixed(4))
+    }
+    console.log(typeof(result))
+    firstNum = result;
+    secondNum = '';
+    operator = new_operator;
     display.innerText = result;
 }
+
 
 const digits = document.querySelectorAll('.num');
 
@@ -41,29 +48,40 @@ digits.forEach((button) => button.addEventListener('click',
     (e) => processDigits(e.target.innerText)));
 
 function processDigits(n) {
-    // console.log(n)
     if (operator === null) {
         firstNum += n;
         display.innerText = firstNum;
-        console.log(n)
     } else {
         secondNum += n;
         display.innerText = secondNum;
     }
 }
 
-
 const operators = document.querySelectorAll('.op');
 
 operators.forEach((button) => button.addEventListener('click',
     (e) => processOperators(e.target.innerText)));
 
-
 function processOperators(op) {
-    if (op === '=' && firstNum && secondNum) {
-        operate(+firstNum, +secondNum, operator);
-    } else {
+    if ((operator != null) && firstNum && secondNum) {
+        if (op === '=') {
+            operate(+firstNum, +secondNum, operator);
+        } else {
+            operate(+firstNum, +secondNum, operator, new_operator = op);
+        }
+    } else if (op != '=') {
         operator = op;
-        console.log(operator);
     }
 }
+
+
+const ceBtn = document.querySelector('.ce');
+ceBtn.addEventListener('click', ce)
+
+function ce() {
+    firstNum = '';
+    secondNum = '';
+    operator = null;
+    display.textContent = '';
+}
+
